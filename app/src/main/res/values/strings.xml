@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NetTransferDemo</string>
+    <string name="full_name">Daniel Arkhipov</string>
+    <string name="title">NetTransfer Dev</string>
+    <string name="instruction">Инструкция</string>
+    <string name="about_developer">О разработчике</string>
+    <string name="turn_on_off_data_transfer">Включить/выключить передачу данных</string>
 </resources>

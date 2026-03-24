@@ -6,26 +6,161 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nettransferdemo.ui.theme.NetTransferDemoTheme
+
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.navigation.NavHost
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.filled.ArrowBack
+
+enum class NTScreen {
+    Start,
+    Instruction,
+    DeveloperInfo
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NTApp(
+    navController: NavHostController = rememberNavController()
+) {
+    Scaffold(
+        topBar = {
+            NTAppBar(
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
+                modifier = Modifier
+            )
+        }
+
+
+    ) { innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = NTScreen.Start.name,
+            modifier = Modifier.padding(innerPadding)
+        )
+        {
+            composable(route = NTScreen.Start.name) {
+                MainScreen(
+                    moveToInstruction = {navController.navigate(NTScreen.Instruction.name)},
+                    moveToDeveloperInfo = {navController.navigate(route= NTScreen.DeveloperInfo.name)}
+                )
+            }
+            composable(route = NTScreen.DeveloperInfo.name){
+                DeveloperPage(navigateUp = {navController.navigate(NTScreen.Start.name)})
+            }
+            composable(route = NTScreen.Instruction.name){
+                InstructionArticle(navigateUp = {navController.navigate(NTScreen.Start.name)})
+            }
+//            composable(route = CupcakeScreen.Flavor.name){
+//                val localContext = LocalContext.current
+//                SelectOptionScreen(
+//                    subtotal = uiState.price,
+//                    onNextButtonClicked = {
+//                        navController.navigate(CupcakeScreen.Pickup.name)
+//                    },
+//                    onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
+//                    options = DataSource.flavors.map{ id ->
+//                        localContext.resources.getString(id)
+//                    },
+//                    onSelectionChanged = { viewModel.setFlavor(it) },
+//                    modifier = Modifier.fillMaxHeight()
+//                )
+//            }
+//            composable(route = CupcakeScreen.Pickup.name){
+//                SelectOptionScreen(
+//                    subtotal = uiState.price,
+//                    options = uiState.pickupOptions,
+//                    onNextButtonClicked = {navController.navigate(CupcakeScreen.Summary.name)},
+//                    onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
+//                    onSelectionChanged = {viewModel.setDate(it)},
+//                    modifier = Modifier.fillMaxHeight()
+//                )
+//            }
+//            composable(route = CupcakeScreen.Summary.name){
+//                val context = LocalContext.current
+//                OrderSummaryScreen(
+//                    orderUiState = uiState,
+//                    onSendButtonClicked = {
+//                            subject: String, summary: String ->
+//                        shareOrder(context, subject=subject, summary=summary)
+//                    },
+//                    onCancelButtonClicked= {cancelOrderAndNavigateToStart(viewModel, navController)},
+//                    modifier = Modifier.fillMaxHeight()
+//                )
+//            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NTAppBar(
+    canNavigateBack: Boolean,
+    navigateUp: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        title = { Text("NetTransfer") },
+        colors = TopAppBarDefaults.mediumTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        modifier = modifier,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    )
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +169,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             NetTransferDemoTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    InstructionArticle()
+                    NTApp()
+//                    InstructionArticle()
+//                    DeveloperPage()
                 }
             }
         }
@@ -42,50 +179,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun InstructionArticle(){
-    val slide1 = painterResource(id=R.drawable.slide1_work_principle)
-    val slide2 = painterResource(id=R.drawable.slide2_algorithm)
-    val slide3 = painterResource(id=R.drawable.slide3_restrictions)
-    val slide4 = painterResource(id=R.drawable.slide4_possible_connections)
-    val slide5 = painterResource(id=R.drawable.slide5_scheme_smartphone_dex)
-    Column(modifier = Modifier
-        .verticalScroll(rememberScrollState())
-        .background(color=Color(0xFFF6EDFF))) {
-        Image(
-            painter = slide1,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth
-        )
-        Image(
-            painter = slide2,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-        )
-        Image(
-            painter = slide3,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-        )
-        Image(
-            painter = slide4,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-        )
-        Image(
-            painter = slide5,
-            contentDescription = null,
-            contentScale = ContentScale.FillWidth,
-        )
-
-
-
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun InstructionArcticlePreview() {
-    NetTransferDemoTheme {
-        InstructionArticle()
-    }
+fun NTAppBar(canNavigateBack: Boolean, navigateUp: () -> Boolean) {
+    TODO("Not yet implemented")
 }
