@@ -1,6 +1,7 @@
 package com.example.nettransferdemo
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -52,6 +53,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class NTScreen {
     Start,
@@ -63,6 +67,7 @@ enum class NTScreen {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NTApp(
+    viewModel: NTViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     Scaffold(
@@ -76,7 +81,7 @@ fun NTApp(
 
 
     ) { innerPadding ->
-
+        val uiState = viewModel.uiState.collectAsState()
         NavHost(
             navController = navController,
             startDestination = NTScreen.Start.name,
@@ -85,6 +90,7 @@ fun NTApp(
         {
             composable(route = NTScreen.Start.name) {
                 MainScreen(
+                    onCheckedChange = {viewModel.setIsTransferTurnedOn(it)},
                     moveToInstruction = {navController.navigate(NTScreen.Instruction.name)},
                     moveToDeveloperInfo = {navController.navigate(route= NTScreen.DeveloperInfo.name)}
                 )
@@ -170,8 +176,6 @@ class MainActivity : ComponentActivity() {
             NetTransferDemoTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     NTApp()
-//                    InstructionArticle()
-//                    DeveloperPage()
                 }
             }
         }

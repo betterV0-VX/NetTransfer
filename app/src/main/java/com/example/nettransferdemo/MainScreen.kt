@@ -28,11 +28,12 @@ import com.example.nettransferdemo.ui.theme.NetTransferDemoTheme
 
 @Composable
 fun MainScreen(
+    onCheckedChange: (Boolean)->Unit,
     moveToInstruction: ()->Unit,
     moveToDeveloperInfo: ()->Unit,
     modifier: Modifier= Modifier,
 ){
-    var checked by remember { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(false) }
     Column (modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Top){
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
 
@@ -51,7 +52,12 @@ fun MainScreen(
         }
         Spacer(Modifier.fillMaxHeight(0.5f))
         Row(modifier = modifier) {
-            Switch(checked = checked, onCheckedChange = { checked = it })
+            Switch(checked = isChecked,
+                onCheckedChange = {
+                    isChecked = it
+                    onCheckedChange(isChecked)
+                }
+            )
             Text(stringResource(R.string.turn_on_off_data_transfer))
         }
     }
@@ -60,6 +66,6 @@ fun MainScreen(
 @Composable
 fun MainScreenPreview(modifier: Modifier= Modifier){
     NetTransferDemoTheme {
-        MainScreen(moveToDeveloperInfo = {}, moveToInstruction = {})
+        MainScreen(onCheckedChange = {}, moveToDeveloperInfo = {}, moveToInstruction = {})
     }
 }
