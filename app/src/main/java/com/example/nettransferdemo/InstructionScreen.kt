@@ -36,7 +36,8 @@ import java.nio.file.WatchEvent
 @Composable
 fun InstructionArticle( navigateUp: ()-> Unit, modifier: Modifier = Modifier){
     Column(verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
             IconButton(onClick = navigateUp) {
                 Icon(

@@ -4,5 +4,5 @@
     <string name="title">NetTransfer Dev</string>
     <string name="instruction">Инструкция</string>
     <string name="about_developer">О разработчике</string>
-    <string name="turn_on_off_data_transfer">Включить/выключить передачу данных</string>
+    <string name="turn_on_off_data_transfer">Передача буфера обмена</string>
 </resources>

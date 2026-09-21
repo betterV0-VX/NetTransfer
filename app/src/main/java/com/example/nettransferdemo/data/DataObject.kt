@@ -9,7 +9,7 @@ object DataObject {
     val instructionSlidesIds = listOf(
         R.drawable.slide1_work_principle,
         R.drawable.slide2_algorithm,
-        R.drawable.slide3_restrictions,
+        R.drawable.slide3_restrictions_upd,
         R.drawable.slide4_possible_connections,
         R.drawable.slide5_scheme_smartphone_dex
     )
